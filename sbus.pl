@@ -10,7 +10,7 @@ get '/' => sub {
     my $echostr = $self->param('echostr');
     my $pass = checkSignature($self);
     if($pass){
-        $self->render($echostr);
+        $self->render(test => $echostr);
     }
     else{
         $self->render(text => $pass);
@@ -19,7 +19,9 @@ get '/' => sub {
 
 post '/' => sub {
     my $self = shift;
-    say $self->req->body;
+    open my $fh, '>', 'log';
+    say $fh $self->req->body;
+    close $fh
 };
 
 sub checkSignature{

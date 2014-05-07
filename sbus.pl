@@ -11,10 +11,12 @@ get '/' => sub {
     my $pass = checkSignature($self);
     if($pass){
         say $echostr;
+        say 'pass';
         $self->render(test => $echostr);
     }
     else{
         say $echostr;
+        say 'no pass';
         $self->render(text => $pass);
     }
 };

@@ -16,7 +16,7 @@ __DATA__
 % layout 'default';
 % title 'Welcome';
 Welcome to the Mojolicious real-time web framework!
-
+SBUS is a weixin Bus robot
 @@ layouts/default.html.ep
 <!DOCTYPE html>
 <html>

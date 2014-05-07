@@ -13,15 +13,14 @@ get '/' => sub {
         $self->render(test => $echostr);
     }
     else{
+        say $echostr;
         $self->render(text => $pass);
     }
 };
 
 post '/' => sub {
     my $self = shift;
-    open my $fh, '>', 'log';
-    say $fh $self->req->body;
-    close $fh
+    say $self->req->body;
 };
 
 sub checkSignature{

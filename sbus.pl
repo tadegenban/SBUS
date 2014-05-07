@@ -24,9 +24,9 @@ get '/' => sub {
 post '/' => sub {
     my $self = shift;
     say $self->req->body;
-    say $self->param('xml');
-    say $self->param('URL');
-    say $self->param('ToUserName');
+    say $self->req->body_params->param('xml');
+    say $self->req->body_params->param('URL');
+    say $self->req->body_params->param('ToUserName');
 };
 
 sub checkSignature{

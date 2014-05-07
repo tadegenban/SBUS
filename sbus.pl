@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use Digest::SHA1 qw(sha1);
+use Data::Dumper;
 
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
@@ -24,7 +25,7 @@ get '/' => sub {
 post '/' => sub {
     my $self = shift;
     say $self->req->body;
-    say $self->req;
+    say Dumper $self->req;
 };
 
 sub checkSignature{

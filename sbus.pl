@@ -10,6 +10,7 @@ get '/' => sub {
     my $echostr = $self->param('echostr');
     my $pass = checkSignature($self);
     if($pass){
+        say $echostr;
         $self->render(test => $echostr);
     }
     else{

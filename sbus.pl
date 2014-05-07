@@ -24,10 +24,7 @@ get '/' => sub {
 post '/' => sub {
     my $self = shift;
     say $self->req->body;
-    say $self->req->url;
-    say $self->req->header;
-    say $self->req->version;
-    say $self->req->method;
+    say $self->req;
 };
 
 sub checkSignature{

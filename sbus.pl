@@ -71,11 +71,11 @@ __DATA__
 
 @@ text.html.ep
 <xml>
-<ToUserName><![CDATA[<%= to_user_name %>]]></ToUserName>
-<FromUserName><![CDATA[<% from_user_name %>]]></FromUserName>
+<ToUserName><![CDATA[<%= $to_user_name %>]]></ToUserName>
+<FromUserName><![CDATA[<%= $from_user_name %>]]></FromUserName>
 <CreateTime>12345678</CreateTime>
 <MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[<%= response %>]]></Content>
+<Content><![CDATA[<%= $response %>]]></Content>
 </xml>
 @@ layouts/default.html.ep
 <!DOCTYPE html>

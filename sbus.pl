@@ -27,6 +27,8 @@ post '/' => sub {
     my $self = shift;
     my $xml = $self->req->body;
     my $dom = Mojo::DOM->new($xml);
+    say $xml;
+    say $dom;
     say $dom->at('Content')->text;
 };
 

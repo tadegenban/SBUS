@@ -27,9 +27,10 @@ post '/' => sub {
     my $self = shift;
     my $xml = $self->req->body;
     my $dom = Mojo::DOM->new('<div><p id="a">A</p><p id="b">B</p></div>');
+    my $dd = '<div><p id="a">A</p><p id="b">B</p></div>';
     say $xml;
     say $dom.'11';
-    say $dom->at('p')->text;
+    say $dd->at('p')->text;
 };
 
 sub checkSignature{

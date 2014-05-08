@@ -26,7 +26,7 @@ get '/' => sub {
 post '/' => sub {
     my $self = shift;
     my $xml = $self->req->body;
-    my $dom = Mojo::DOM->new('<xml><Content>wowo</Content><xml>');
+    my $dom = Mojo::DOM->new('<xml><Content>wowo</Content></xml>');
     say $xml;
     say $dom;
     say $dom->at('Content')->text;

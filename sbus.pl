@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
+use Mojo::DOM;
 use Digest::SHA1 qw(sha1);
 use Data::Dumper;
 
@@ -25,7 +26,8 @@ get '/' => sub {
 post '/' => sub {
     my $self = shift;
     my $xml = $self->req->body;
-    say $self->req->param('ToUserName');
+    my $dom = Mojo::DOM->new($xml);
+    say $dom->at('Content')->text;
 };
 
 sub checkSignature{

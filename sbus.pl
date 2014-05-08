@@ -26,10 +26,10 @@ get '/' => sub {
 post '/' => sub {
     my $self = shift;
     my $xml = $self->req->body;
-    my $dom = Mojo::DOM->new('<xml><Content>wowo</Content></xml>');
+    my $dom = Mojo::DOM->new('<div><p id="a">A</p><p id="b">B</p></div>');
     say $xml;
     say $dom;
-    say $dom->at('Content')->text;
+    say $dom->at('p')->text;
 };
 
 sub checkSignature{

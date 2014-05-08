@@ -30,17 +30,17 @@ post '/' => sub {
     $dom->xml(1);
     $dom->parse($xml);
     my $content = $dom->at('Content')->text;
-    my $to_user_name   = $dom->at('ToUserName')->text;
-    my $from_user_name = $dom->at('FromUserName')->text;
+    my $me   = $dom->at('ToUserName')->text;
+    my $user = $dom->at('FromUserName')->text;
     say $content;
-    say $to_user_name;
-    say $from_user_name;
+    say $me;
+    say $user;
     return;
     if($content eq '?'){
         my $response = "hello weixin";
         $self->stash(response => $response);
-        $self->stash(to_user_name => $to_user_name);
-        $self->stash(from_user_name => $from_user_name);
+        $self->stash(to_user_name => $user);
+        $self->stash(from_user_name => $me);
         $self->render('text');
     }
     else{

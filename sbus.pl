@@ -28,7 +28,7 @@ post '/' => sub {
     my $xml = $self->req->body;
     my $dom = Mojo::DOM->new('<div><p id="a">A</p><p id="b">B</p></div>');
     say $xml;
-    say $dom;
+    say $dom.'11';
     say $dom->at('p')->text;
 };
 

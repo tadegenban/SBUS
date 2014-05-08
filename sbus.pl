@@ -37,11 +37,15 @@ post '/' => sub {
     say $from_user_name;
     return;
     if($content eq '?'){
-        $self->render();
+        my $response = "hello weixin";
+        $self->stash(response => $response);
+        $self->stash(to_user_name => $to_user_name);
+        $self->stash(from_user_name => $from_user_name);
+        $self->render('text');
     }
     else{
         my $result = eval($content);
-        $self->render();
+        $self->render('text');
     }
 };
 
@@ -65,11 +69,14 @@ sub checkSignature{
 app->start;
 __DATA__
 
-@@ index.html.ep
-% layout 'default';
-% title 'Welcome';
-Welcome to the Mojolicious real-time web framework!
-SBUS is a weixin Bus robot
+@@ text.html.ep
+<xml>
+<ToUserName><![CDATA[<%= to_user_name %>]]></ToUserName>
+<FromUserName><![CDATA[<% from_user_name %>]]></FromUserName>
+<CreateTime>12345678</CreateTime>
+<MsgType><![CDATA[text]]></MsgType>
+<Content><![CDATA[<%= response %>]]></Content>
+</xml>
 @@ layouts/default.html.ep
 <!DOCTYPE html>
 <html>

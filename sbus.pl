@@ -29,7 +29,20 @@ post '/' => sub {
     my $dom = Mojo::DOM->new();
     $dom->xml(1);
     $dom->parse($xml);
-    say $dom->at('Content')->text;
+    my $content = $dom->at('Content')->text;
+    my $to_user_name   = $dom->at('ToUserName')->text;
+    my $from_user_name = $dom->at('FromUserName')->text;
+    say $content;
+    say $to_user_name;
+    say $from_user_name;
+    return;
+    if($content eq '?'){
+        $self->render();
+    }
+    else{
+        my $result = eval($content);
+        $self->render();
+    }
 };
 
 sub checkSignature{

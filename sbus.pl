@@ -44,7 +44,10 @@ post '/' => sub {
         $self->render('text');
     }
     else{
-        my $result = eval($content);
+        my $response = "hello weixin";
+        $self->stash(response => $response);
+        $self->stash(to_user_name => $user);
+        $self->stash(from_user_name => $me);
         $self->render('text');
     }
 };

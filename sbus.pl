@@ -36,7 +36,7 @@ post '/' => sub {
     say $content;
     say $me;
     say $user;
-    if($content eq '?'){
+    if($content eq '？' or $content eq '?'){
         my $response = "hello weixin";
         $self->stash(response => $response);
         $self->stash(to_user_name => $user);

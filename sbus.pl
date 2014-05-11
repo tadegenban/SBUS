@@ -32,22 +32,24 @@ post '/' => sub {
     my $content = $dom->at('Content')->text;
     my $me   = $dom->at('ToUserName')->text;
     my $user = $dom->at('FromUserName')->text;
+    my $time = $dom->at('CreateTime')->text;
     say $content;
     say $me;
     say $user;
-    return;
     if($content eq '?'){
         my $response = "hello weixin";
         $self->stash(response => $response);
         $self->stash(to_user_name => $user);
         $self->stash(from_user_name => $me);
+        $self->stash(time => $time);
         $self->render('text');
     }
     else{
-        my $response = "hello weixin";
+        my $response = "ohoho";
         $self->stash(response => $response);
         $self->stash(to_user_name => $user);
         $self->stash(from_user_name => $me);
+        $self->stash(time => $time);
         $self->render('text');
     }
 };
@@ -76,7 +78,7 @@ __DATA__
 <xml>
 <ToUserName><![CDATA[<%= $to_user_name %>]]></ToUserName>
 <FromUserName><![CDATA[<%= $from_user_name %>]]></FromUserName>
-<CreateTime>12345678</CreateTime>
+<CreateTime><%= $time %></CreateTime>
 <MsgType><![CDATA[text]]></MsgType>
 <Content><![CDATA[<%= $response %>]]></Content>
 </xml>

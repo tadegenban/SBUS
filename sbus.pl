@@ -3,6 +3,7 @@ use Mojolicious::Lite;
 use Mojo::DOM;
 use Digest::SHA1 qw(sha1);
 use Data::Dumper;
+use Encode;
 
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
@@ -33,25 +34,12 @@ post '/' => sub {
     my $me   = $dom->at('ToUserName')->text;
     my $user = $dom->at('FromUserName')->text;
     my $time = $dom->at('CreateTime')->text;
-    say $content;
-    say $me;
-    say $user;
-    if($content eq '你好' or $content eq '?'){
-        my $response = "hello weixin";
-        $self->stash(response => $response);
-        $self->stash(to_user_name => $user);
-        $self->stash(from_user_name => $me);
-        $self->stash(time => $time);
-        $self->render('text');
-    }
-    else{
-        my $response = "ohoho";
-        $self->stash(response => $response);
-        $self->stash(to_user_name => $user);
-        $self->stash(from_user_name => $me);
-        $self->stash(time => $time);
-        $self->render('text');
-    }
+    my $response = response($content);
+    $self->stash(response => $response);
+    $self->stash(to_user_name => $user);
+    $self->stash(from_user_name => $me);
+    $self->stash(time => $time);
+    $self->render('text');
 };
 
 sub checkSignature{
@@ -71,6 +59,32 @@ sub checkSignature{
     return 0;
 }
 
+sub response{
+    my $content = shift;
+    $content = Encode::decode("utf8", $content);
+    say length $content;
+    my $response = get_help();
+    if($content eq '帮助'){
+        $response = get_help();
+        return $response;
+    }
+    if($content eq '张江'){
+        my $loc = "张江";
+        $response = get_schedule($loc);
+        return $response;
+    }
+    return $response;
+}
+
+sub get_help{
+    return 'have fun!宋代';
+}
+sub get_schedule{
+    my $loc = shift;
+    if($loc eq '张江'){
+        return '高科';
+    }
+}
 app->start;
 __DATA__
 

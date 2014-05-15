@@ -138,7 +138,7 @@ sub parse_schedule{
             $response .= "==========\n";
         }
         else{
-            $response .= sprintf("%-15s | %-5s", @$arr);
+            $response .= sprintf("%-10s | %-5s", @$arr);
             $response .= "\n";
         }
     }

@@ -123,8 +123,6 @@ sub load_schedule{
             next;
         }
         if($flag_head == 0){
-            my $time_A = $row->[0];
-            my $time_B = $row->[1];
             push $hash->{$timing}->{$station_A}, $row;
             next;
         }
@@ -140,7 +138,7 @@ sub parse_schedule{
             $response .= "==========\n";
         }
         else{
-            $response .= sprintf("%-8s | %-8s", @$arr);
+            $response .= sprintf("%-10s | %-10s", @$arr);
             $response .= "\n";
         }
     }

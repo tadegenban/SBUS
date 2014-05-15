@@ -134,6 +134,7 @@ sub parse_schedule{
     my $array = $schedule_hash->{$timing}->{$station};
     my $response;
     foreach my $arr(@$array){
+        say sprintf("$-4s|",$arr->[0]);
         if($arr->[0] eq '='){
             $response .= "==========\n";
         }

@@ -88,19 +88,27 @@ sub get_welcome{
 }
 sub get_schedule{
     my $loc = shift;
-    state $timing = 'weekend';
-    if ($timing eq 'weekend'){
-        $timing = 'workday';
-    }
-    else{
-        $timing = 'weekend';
-    }
+
     if($loc =~ /张|江|高|科/){
+        state $timing = 'weekend';
+        if ($timing eq 'weekend'){
+            $timing = 'workday';
+        }
+        else{
+            $timing = 'weekend';
+        }
         my $station = '张 江';
         my $response = parse_schedule($schedule_hash, $timing, $station);
         return $response;
     }
     if($loc =~ /龙|阳/){
+        state $timing = 'weekend';
+        if ($timing eq 'weekend'){
+            $timing = 'workday';
+        }
+        else{
+            $timing = 'weekend';
+        }
         my $station = '龙 阳';
         my $response = parse_schedule($schedule_hash, $timing, $station);
         return $response;

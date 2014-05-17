@@ -68,12 +68,12 @@ sub checkSignature{
 sub response{
     my $content = shift;
     $content = Encode::decode("utf8", $content);
-    my $response = get_help();
-    if($content eq '帮助'){
+    my $response = get_welcome();
+    if($content =~ /帮|\?|？|help|h/){
         $response = get_help();
         return $response;
     }
-    else{
+    if($content =~ /张|江|高|科|龙|阳|中|花|/){
         $response = get_schedule($content);
         return $response;
     }
@@ -83,16 +83,32 @@ sub response{
 sub get_help{
     return 'have fun!宋代';
 }
+sub get_welcome{
+    return 'have fun!宋代';
+}
 sub get_schedule{
     my $loc = shift;
-    if($loc =~ /张江/){
-        my $station = '张江';
-        my $response = parse_schedule($schedule_hash, 'workday', $station);
+    state $timing = 'weekend';
+    if ($timing eq 'weekend'){
+        $timing = 'workday';
+    }
+    else{
+        $timing = 'weekend';
+    }
+    if($loc =~ /张|江|高|科/){
+        my $station = '张 江';
+        my $response = parse_schedule($schedule_hash, $timing, $station);
         return $response;
     }
-    if($loc =~ /龙阳/){
-        my $station = '龙阳';
-        my $response = parse_schedule($schedule_hash, 'workday', $station);
+    if($loc =~ /龙|阳/){
+        my $station = '龙 阳';
+        my $response = parse_schedule($schedule_hash, $timing, $station);
+        return $response;
+    }
+    if($loc =~ /花/){
+        return '中芯花苑班车信息，还未录入，近期更新';
+        my $station = '花 苑';
+        my $response = parse_schedule($schedule_hash, $timing, $station);
         return $response;
     }
 }
@@ -132,17 +148,24 @@ sub load_schedule{
 sub parse_schedule{
     my ($schedule_hash, $timing, $station) = @_;
     my $array = $schedule_hash->{$timing}->{$station};
-    my $response = "\n";
+    my $response;
+    if($timing eq 'workday'){
+        $response = "正常工作期间班车时刻\n";
+    }
+    else{
+        $response = "节假日期间班车时刻\n";
+    }
     foreach my $arr(@$array){
         if($arr->[0] eq '='){
-            $response .= "==========\n";
+            $response .= "="x20;
+            $response .= "\n";
         }
         else{
             my $gcs0 = Unicode::GCString->new($arr->[0]);
             my $del0 = $gcs0->columns - $gcs0->length;
             my $gcs1 = Unicode::GCString->new($arr->[1]);
             my $del1 = $gcs1->columns - $gcs1->length;
-            my @new_arr = (6 - $del0, $arr->[0], 6 - $del1, $arr->[1]);
+            my @new_arr = (12 - $del0, $arr->[0], 12 - $del1, $arr->[1]);
             $response .= sprintf("%-*s | %*s", @new_arr);
             $response .= "\n";
         }

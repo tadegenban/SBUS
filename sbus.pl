@@ -7,6 +7,7 @@ use Encode;
 use utf8;
 use Text::CSV;
 use Data::Dumper;
+use Unicode::GCString;
 binmode(STDOUT, ":utf8");
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
@@ -67,7 +68,6 @@ sub checkSignature{
 sub response{
     my $content = shift;
     $content = Encode::decode("utf8", $content);
-    say length $content;
     my $response = get_help();
     if($content eq '帮助'){
         $response = get_help();
@@ -132,13 +132,18 @@ sub load_schedule{
 sub parse_schedule{
     my ($schedule_hash, $timing, $station) = @_;
     my $array = $schedule_hash->{$timing}->{$station};
-    my $response;
+    my $response = "\n";
     foreach my $arr(@$array){
         if($arr->[0] eq '='){
             $response .= "==========\n";
         }
         else{
-            $response .= sprintf("%-10s | %-5s", @$arr);
+            my $gcs0 = Unicode::GCString->new($arr->[0]);
+            my $del0 = $gcs0->columns - $gcs0->length;
+            my $gcs1 = Unicode::GCString->new($arr->[1]);
+            my $del1 = $gcs1->columns - $gcs1->length;
+            my @new_arr = (10 - $del0, $arr->[0], 10 - $del1, $arr->[1]);
+            $response .= sprintf("%-*s | %-*s", @new_arr);
             $response .= "\n";
         }
     }

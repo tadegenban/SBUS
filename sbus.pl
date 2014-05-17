@@ -115,9 +115,9 @@ sub get_schedule{
     }
     if($loc =~ /花/){
         return '中芯花苑班车信息，还未录入，近期更新';
-        my $station = '花 苑';
-        my $response = parse_schedule($schedule_hash, $timing, $station);
-        return $response;
+        #my $station = '花 苑';
+        #my $response = parse_schedule($schedule_hash, $timing, $station);
+        #return $response;
     }
 }
 sub load_schedule{

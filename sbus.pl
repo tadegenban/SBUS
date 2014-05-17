@@ -142,8 +142,8 @@ sub parse_schedule{
             my $del0 = $gcs0->columns - $gcs0->length;
             my $gcs1 = Unicode::GCString->new($arr->[1]);
             my $del1 = $gcs1->columns - $gcs1->length;
-            my @new_arr = (10 - $del0, $arr->[0], 10 - $del1, $arr->[1]);
-            $response .= sprintf("%-*s | %-*s", @new_arr);
+            my @new_arr = (6 - $del0, $arr->[0], 6 - $del1, $arr->[1]);
+            $response .= sprintf("%-*s | %*s", @new_arr);
             $response .= "\n";
         }
     }

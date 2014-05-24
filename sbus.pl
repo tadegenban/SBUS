@@ -16,6 +16,7 @@ plugin 'PODRenderer';
 my $schedule_file = 'schedule.csv';
 my $schedule_hash = load_schedule($schedule_file);
 my $user_hash     = {};
+my $user_scalar  = '';
 get '/' => sub {
     my $self = shift;
     my $echostr = $self->param('echostr');
@@ -73,7 +74,7 @@ sub response{
     my $user;
     my $response;
     say keys $user_hash;
-    $user_hash->{'a'} = 'b';
+    $user_scalar = 'b';
     return 1;
     say keys $user_hash;
     if(exists $user_hash->{$user_name}){

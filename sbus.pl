@@ -111,7 +111,7 @@ sub response{
             $response = get_more_info($content);
             return $response;
         }
-        if($content =~ /^[1-4]$/){
+        if($content =~ /^[1234]$/){
             say $content;
             $user->stay();
             $response = get_schedule($target, $content);

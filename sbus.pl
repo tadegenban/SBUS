@@ -73,6 +73,7 @@ sub response{
     my $user_name = shift;
     my $user;
     my $response;
+    say keys $user_hash;
     if(exists $user_hash->{$user_name}){
         $user = $user_hash->{$user_name};
     }

@@ -119,6 +119,7 @@ sub response{
             $response = get_schedule($target, $content);
             return $response;
         }
+        say 'here?';
         $response = get_help();
         $user->stay();
         return $response;

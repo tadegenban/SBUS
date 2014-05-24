@@ -73,13 +73,15 @@ sub response{
     my $user;
     my $response;
     say keys $user_hash;
+    $user_hash->{'a'} = 'b';
+    return 1;
+    say keys $user_hash;
     if(exists $user_hash->{$user_name}){
         $user = $user_hash->{$user_name};
     }
     else{
         $user = UserState->new(username => $user_name);
         $user_hash->{$user_name} = $user;
-        $user_hash->{$user_name} = 'user';
     }
     say '----';
     say keys $user_hash;

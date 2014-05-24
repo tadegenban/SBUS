@@ -10,6 +10,7 @@ get '/' => sub {
 
 
 sub response{
+    say 'here';
     say $user_scalar;
     $user_scalar = 'b';
     return 1;

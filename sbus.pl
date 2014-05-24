@@ -41,7 +41,6 @@ post '/' => sub {
     my $content = $dom->at('Content')->text;
     my $me   = $dom->at('ToUserName')->text;
     my $user_name = $dom->at('FromUserName')->text;
-    say $user_name;
     my $time = $dom->at('CreateTime')->text;
     my $response = response($content, $user_name);
     $self->stash(response => $response);

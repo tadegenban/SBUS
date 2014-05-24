@@ -148,10 +148,10 @@ sub get_more_info{
     my $target = shift;
     say $target;
     return qq/
-<工作日>公司--->$target，请输入 1
-<工作日>$target--->公司，请输入 2
-<节假日>公司--->$target，请输入 3
-<节假日>$target--->公司，请输入 4
+[工作日]公司 到 $target，请输入 1
+[工作日]$target 到 公司，请输入 2
+[节假日]公司 到 $target，请输入 3
+[节假日]$target 到 公司，请输入 4
 更多，您可以输入其他地点来查询其他信息
 ------------
 或输入：帮助，查看帮助
@@ -237,8 +237,8 @@ sub parse_schedule{
         $timing_zh = "节假日";
     }
     my $head = qq/
--------------------
-<$timing_zh>$from--->$to
+---------------------
+[$timing_zh]$from 到$to
 ---------------------
 /;
     my $body = '';
@@ -256,10 +256,10 @@ sub parse_schedule{
     }
     my $tail = qq/
 ------------
-<$timing_zh>$from--->$to，请输入 1
-<$timing_zh>$from--->$to，请输入 2
-<$timing_zh>$from--->$to，请输入 3
-<$timing_zh>$from--->$to，请输入 4
+【$timing_zh】$from 到 $to，请输入 1
+【$timing_zh】$from 到 $to，请输入 2
+【$timing_zh】$from 到 $to，请输入 3
+【$timing_zh】$from 到 $to，请输入 4
 -------------------
 更多，您可以输入其他地点来查询其他信息
 或输入：帮助，查看帮助

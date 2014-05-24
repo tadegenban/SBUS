@@ -79,6 +79,7 @@ sub response{
     else{
         $user = UserState->new(username => $user_name);
         $user_hash->{$user_name} = $user;
+        $user_hash->{$user_name} = 'user';
     }
     say '----';
     say keys $user_hash;

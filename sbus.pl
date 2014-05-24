@@ -96,7 +96,7 @@ sub response{
             $response = get_more_info($content);
             return $response;
         }
-        say 'init?'
+        say 'init?';
         $response = get_help();
         $user->stay();
         return $response;

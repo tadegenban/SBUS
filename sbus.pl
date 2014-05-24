@@ -73,7 +73,7 @@ sub response{
     my $user_name = shift;
     my $user;
     my $response;
-    say keys $user_hash;
+    say keys $user_scalar;
     $user_scalar = 'b';
     return 1;
     say keys $user_hash;

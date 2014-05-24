@@ -81,6 +81,8 @@ sub response{
         $user = UserState->new(username => $user_name);
         $user_hash->{$user_name} = $user;
     }
+    say '----';
+    say keys $user_hash;
     my $state = $user->get_state();
     $content = Encode::decode("utf8", $content);
     if ($state eq 'init'){

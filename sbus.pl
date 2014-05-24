@@ -112,6 +112,7 @@ sub response{
             return $response;
         }
         if($content =~ /^[1-4]$/){
+            say $content;
             $user->stay();
             $response = get_schedule($target, $content);
             return $response;
@@ -180,7 +181,7 @@ sub get_schedule{
     }
     if ($choise == 4){
         $timing = 'weekend';
-        $from   = $station   ;
+        $from   = $station ;
         $to     = '公司' ;
     }
     my $response = parse_schedule($schedule_hash, $timing, $station, $from, $to);

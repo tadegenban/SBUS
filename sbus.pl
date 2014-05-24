@@ -91,6 +91,7 @@ sub response{
         if($content =~ /张江|龙阳|花园/){
             $content =~ s/.*(张江|龙阳|花园).*/$1/g;
             $user->to_target();
+            say $user->get_state();
             $user->set_target($content);
             $response = get_more_info($content);
             return $response;

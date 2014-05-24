@@ -15,8 +15,6 @@ plugin 'PODRenderer';
 
 my $schedule_file = 'schedule.csv';
 my $schedule_hash = load_schedule($schedule_file);
-my $user_hash     = {};
-my $user_scalar  = '';
 get '/' => sub {
     my $self = shift;
     my $echostr = $self->param('echostr');
@@ -43,7 +41,16 @@ post '/' => sub {
     my $me   = $dom->at('ToUserName')->text;
     my $user_name = $dom->at('FromUserName')->text;
     my $time = $dom->at('CreateTime')->text;
-    my $response = response($content, $user_name);
+    my $user_hash = $self->session->{userhash};
+    my $user;
+    if(exists $user_hash->{$user_name}){
+        $user = $user_hash->{$user_name};
+    }
+    else{
+        $user = UserState->new(username => $user_name);
+        $user_hash->{$user_name} = $user;
+    }
+    my $response = response($content, $user);
     $self->stash(response => $response);
     $self->stash(to_user_name => $user_name);
     $self->stash(from_user_name => $me);
@@ -70,22 +77,8 @@ sub checkSignature{
 
 sub response{
     my $content = shift;
-    my $user_name = shift;
-    my $user;
+    my $user = shift;
     my $response;
-    say $user_scalar;
-    $user_scalar = 'b';
-    return 1;
-    say keys $user_hash;
-    if(exists $user_hash->{$user_name}){
-        $user = $user_hash->{$user_name};
-    }
-    else{
-        $user = UserState->new(username => $user_name);
-        $user_hash->{$user_name} = $user;
-    }
-    say '----';
-    say keys $user_hash;
     my $state = $user->get_state();
     $content = Encode::decode("utf8", $content);
     if ($state eq 'init'){

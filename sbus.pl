@@ -101,8 +101,10 @@ sub response{
         return $response;
     }
     if ($state eq 'target'){
+        say 'here 1?';
         my $target = $user->get_target();
         if($content =~ /帮助|帮|\?|？|help|h/){
+            say 'here help??';
             $response = get_help();
             $user->stay();
             return $response;

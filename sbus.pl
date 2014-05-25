@@ -53,6 +53,7 @@ post '/' => sub {
         };
         $self->session->{$user_name} = $user;
     }
+    say Dumper $self->session;
     my $response = response($content, $user);
     $self->stash(response => $response);
     $self->stash(to_user_name => $user_name);

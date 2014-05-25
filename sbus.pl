@@ -43,7 +43,6 @@ post '/' => sub {
     my $time = $dom->at('CreateTime')->text;
     my $user;
     if(exists $self->session->{$user_name}){
-        say 1;
         $user = $self->session->{$user_name};
     }
     else{
@@ -51,9 +50,8 @@ post '/' => sub {
                  'state'    => 'init',
                  'target'   => '',
         };
-        $self->session->{$user_name} = $user;
-        say 2;
     }
+    $self->session->{$user_name} = $user;
     my $response = response($content, $user);
     $self->stash(response => $response);
     $self->stash(to_user_name => $user_name);
@@ -86,7 +84,6 @@ sub response{
     my $state = $user->{'state'};
     $content = Encode::decode("utf8", $content);
     if ($state eq 'init'){
-        say 3;
         if($content =~ /帮助|帮|\?|？|help|h/){
             $response = get_help();
             return $response;
@@ -102,7 +99,6 @@ sub response{
         return $response;
     }
     if ($state eq 'target'){
-        say 4;
         my $target = $user->{'target'};
         if($content =~ /帮助|帮|\?|？|help|h/){
             $response = get_help();

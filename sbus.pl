@@ -8,7 +8,7 @@ use utf8;
 use Text::CSV;
 use Data::Dumper;
 use Unicode::GCString;
-use UserState;
+#use UserState;    use hash insdead;
 binmode(STDOUT, ":utf8");
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
@@ -41,14 +41,16 @@ post '/' => sub {
     my $me   = $dom->at('ToUserName')->text;
     my $user_name = $dom->at('FromUserName')->text;
     my $time = $dom->at('CreateTime')->text;
-    my $user_hash = $self->session->{userhash};
     my $user;
-    if(exists $user_hash->{$user_name}){
-        $user = $user_hash->{$user_name};
+    if(exists $self->session->{$user_name}){
+        $user = $self->session->{$user_name};
     }
     else{
-        $user = UserState->new(username => $user_name);
-        $user_hash->{$user_name} = $user;
+        $user = {'username' => $user_name,
+                 'state'    => 'init',
+                 'target'   => '',
+        };
+        $self->session->{$user_name} = $user;
     }
     my $response = response($content, $user);
     $self->stash(response => $response);
@@ -79,51 +81,39 @@ sub response{
     my $content = shift;
     my $user = shift;
     my $response;
-    my $state = $user->get_state();
+    my $state = $user->{'state'};
     $content = Encode::decode("utf8", $content);
     if ($state eq 'init'){
         if($content =~ /帮助|帮|\?|？|help|h/){
             $response = get_help();
-            $user->stay();
             return $response;
         }
         if($content =~ /张江|龙阳|花园/){
             $content =~ s/.*(张江|龙阳|花园).*/$1/g;
-            $user->to_target();
-            say $user->get_state();
-            $user->set_target($content);
+            $user->{'state'} = 'target';
+            $user->{'target'} = $content;
             $response = get_more_info($content);
             return $response;
         }
-        say 'init?';
         $response = get_help();
-        $user->stay();
         return $response;
     }
     if ($state eq 'target'){
-        say 'here 1?';
-        my $target = $user->get_target();
+        my $target = $user->{'target'};
         if($content =~ /帮助|帮|\?|？|help|h/){
-            say 'here help??';
             $response = get_help();
-            $user->stay();
             return $response;
         }
         if($content =~ /张江|龙阳|花园/){
-            $content = s/.*(张江|龙阳|花园).*/$1/g;
-            $user->stay();
+            $content =~ s/.*(张江|龙阳|花园).*/$1/g;
             $response = get_more_info($content);
             return $response;
         }
         if($content =~ /^[1234]$/){
-            say $content;
-            $user->stay();
             $response = get_schedule($target, $content);
             return $response;
         }
-        say 'here?';
         $response = get_help();
-        $user->stay();
         return $response;
     }
 }
@@ -151,13 +141,12 @@ sub get_welcome{
 }
 
 sub get_more_info{
-    my $target = shift;
-    say $target;
+    my $station = shift;
     return qq/
-[工作日]公司 到 $target，请输入 1
-[工作日]$target 到 公司，请输入 2
-[节假日]公司 到 $target，请输入 3
-[节假日]$target 到 公司，请输入 4
+[工作日]公司 到 $station，请输入 1
+[工作日]$station 到 公司，请输入 2
+[节假日]公司 到 $station，请输入 3
+[节假日]$station 到 公司，请输入 4
 更多，您可以输入其他地点来查询其他信息
 ------------
 或输入：帮助，查看帮助
@@ -232,7 +221,7 @@ sub load_schedule{
     return $hash;
 }
 sub parse_schedule{
-    my ($schedule_hash, $timing, $from, $to) = @_;
+    my ($schedule_hash, $timing, $station, $from, $to) = @_;
     my $array = $schedule_hash->{$timing}->{$from}->{$to};
     my $response;
     my $timing_zh;
@@ -262,10 +251,10 @@ sub parse_schedule{
     }
     my $tail = qq/
 ------------
-【$timing_zh】$from 到 $to，请输入 1
-【$timing_zh】$from 到 $to，请输入 2
-【$timing_zh】$from 到 $to，请输入 3
-【$timing_zh】$from 到 $to，请输入 4
+[工作日]公司 到 $station，请输入 1
+[工作日]$station 到 公司，请输入 2
+[节假日]公司 到 $station，请输入 3
+[节假日]$station 到 公司，请输入 4
 -------------------
 更多，您可以输入其他地点来查询其他信息
 或输入：帮助，查看帮助

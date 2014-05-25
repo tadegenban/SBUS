@@ -8,11 +8,55 @@ use utf8;
 use Text::CSV;
 use Data::Dumper;
 use Unicode::GCString;
+use DBI;
 #use UserState;    use hash insdead;
 binmode(STDOUT, ":utf8");
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
 
+my $dbh = DBI->connect("DBI:mysql:sbus","tadegenban","123456") or die "Could not connect";
+
+# add helper methods for interacting with database
+helper db => sub { $dbh };
+
+helper create_table => sub {
+    my $self = shift;
+    warn "Creating table 'people'\n";
+    $self->db->do('CREATE TABLE userstate (username varchar(255), state varchar(255), target varchar(255));');
+};
+
+helper select => sub {
+    my $self = shift;
+    my $sth = eval { $self->db->prepare('SELECT * FROM userstate') } || return undef;
+    $sth->execute;
+    return $sth->fetchall_hashref('username');
+};
+
+helper insert => sub {
+  my $self = shift;
+  my ($username, $state, $target) = @_;
+  my $sth = eval { $self->db->prepare('INSERT INTO userstate VALUES (?,?,?)') } || return undef;
+  $sth->execute($username, $state, $target);
+  return 1;
+};
+
+helper update_state => sub {
+    my $self = shift;
+    my ($username, $state) = @_;
+    my $sth = eval {$self->db->prepare('UPDATE userstate SET state = ? where username = ?')} || return undef;
+    $sth->execute($state, $username);
+    return 1;
+};
+
+helper update_target => sub {
+    my $self = shift;
+    my ($username, $target) = @_;
+    my $sth = eval {$self->db->prepare('UPDATE userstate SET target = ? where username = ?')} || return undef;
+    $sth->execute($target, $username);
+    return 1;
+};
+
+app->create_table;
 my $schedule_file = 'schedule.csv';
 my $schedule_hash = load_schedule($schedule_file);
 get '/' => sub {
@@ -41,20 +85,9 @@ post '/' => sub {
     my $me   = $dom->at('ToUserName')->text;
     my $user_name = $dom->at('FromUserName')->text;
     my $time = $dom->at('CreateTime')->text;
-    my $user;
-    say Dumper $self->session;
-    if(exists $self->session->{$user_name}){
-        $user = $self->session->{$user_name};
-    }
-    else{
-        $user = {'username' => $user_name,
-                 'state'    => 'init',
-                 'target'   => '',
-        };
-        $self->session->{$user_name} = $user;
-    }
-    say Dumper $self->session;
-    my $response = response($content, $user);
+    my $hash_ref = $self->select;
+    $self->insert($user_name, 'init', '') unless(exists $hash_ref->{$user_name});
+    my $response = response($self, $content, $user_name);
     $self->stash(response => $response);
     $self->stash(to_user_name => $user_name);
     $self->stash(from_user_name => $me);
@@ -80,11 +113,15 @@ sub checkSignature{
 }
 
 sub response{
+    my $self = shift;
     my $content = shift;
-    my $user = shift;
+    my $user_name = shift;
     my $response;
-    my $state = $user->{'state'};
+    my $hash_ref = $self->select;
+    my $state = $hash_ref->{$user_name}->{'state'};
+    my $target = $hash_ref->{$user_name}->{'target'};
     $content = Encode::decode("utf8", $content);
+    $target = Encode::decode("utf8", $target);
     if ($state eq 'init'){
         if($content =~ /帮助|帮|\?|？|help|h/){
             $response = get_help();
@@ -92,8 +129,8 @@ sub response{
         }
         if($content =~ /张江|龙阳|花园/){
             $content =~ s/.*(张江|龙阳|花园).*/$1/g;
-            $user->{'state'} = 'target';
-            $user->{'target'} = $content;
+            $self->update_state($user_name, 'target');
+            $self->update_target($user_name, $content);
             $response = get_more_info($content);
             return $response;
         }
@@ -101,13 +138,13 @@ sub response{
         return $response;
     }
     if ($state eq 'target'){
-        my $target = $user->{'target'};
         if($content =~ /帮助|帮|\?|？|help|h/){
             $response = get_help();
             return $response;
         }
         if($content =~ /张江|龙阳|花园/){
             $content =~ s/.*(张江|龙阳|花园).*/$1/g;
+            $self->update_target($user_name, $content);
             $response = get_more_info($content);
             return $response;
         }

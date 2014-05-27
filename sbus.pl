@@ -56,7 +56,7 @@ helper update_target => sub {
     return 1;
 };
 
-app->create_table || 1;
+#app->create_table;
 my $schedule_file = 'schedule.csv';
 my $schedule_hash = load_schedule($schedule_file);
 get '/' => sub {

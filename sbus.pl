@@ -21,7 +21,7 @@ helper db => sub { $dbh };
 
 helper create_table => sub {
     my $self = shift;
-    warn "Creating table 'people'\n";
+    warn "Creating table 'userstate'\n";
     $self->db->do('CREATE TABLE userstate (username varchar(255), state varchar(255), target varchar(255));');
 };
 

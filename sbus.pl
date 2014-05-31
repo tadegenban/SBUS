@@ -9,12 +9,19 @@ use Text::CSV;
 use Data::Dumper;
 use Unicode::GCString;
 use DBI;
+use DBIx::Connector;
 #use UserState;    use hash insdead;
 binmode(STDOUT, ":utf8");
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
 
-my $dbh = DBI->connect("DBI:mysql:sbus","tadegenban","123456") or die "Could not connect";
+my $connector = DBIx::Connector->new(
+        "DBI:mysql:sbus",
+        'tadegenban',
+        '123456',
+    );
+
+my $dbh = $connector->dbh;
 
 # add helper methods for interacting with database
 helper db => sub { $dbh };
@@ -85,9 +92,12 @@ post '/' => sub {
     my $me   = $dom->at('ToUserName')->text;
     my $user_name = $dom->at('FromUserName')->text;
     my $time = $dom->at('CreateTime')->text;
+    $self->app->log->debug("username: $user_name; time: $time");
     my $hash_ref = $self->select;
+    $self->app->log->debug("hash_ref : $hash_ref");
     $self->insert($user_name, 'init', '') unless(exists $hash_ref->{$user_name});
     my $response = response($self, $content, $user_name);
+    $self->app->log->debug("$response");
     $self->stash(response => $response);
     $self->stash(to_user_name => $user_name);
     $self->stash(from_user_name => $me);

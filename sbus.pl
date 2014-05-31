@@ -16,15 +16,14 @@ binmode(STDOUT, ":utf8");
 plugin 'PODRenderer';
 
 my $connector = DBIx::Connector->new(
-        "DBI:mysql:sbus",
+        "dbi:mysql:database=sbus",
         'tadegenban',
         '123456',
     );
 
-my $dbh = $connector->dbh;
 
 # add helper methods for interacting with database
-helper db => sub { $dbh };
+helper db => sub { $connector->dbh; };
 
 helper create_table => sub {
     my $self = shift;
